@@ -3,10 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Acme\Transformers\LessonTransformer;
 use App\Lesson;
 
 class LessonsController extends Controller
 {
+    protected $lessonTransformer;
+
+    function __construct(LessonTransformer $lessonTransformer)
+    {
+        $this->lessonTransformer = $lessonTransformer;
+    }
+
     public function index()
     {
         // 1. "all()" is bad.
@@ -17,7 +25,7 @@ class LessonsController extends Controller
         $lessons = Lesson::all();
         
         return response()->json([
-            'data' => $this->transformCollection($lessons) // nests information within a 'data' array.
+            'data' => $this->lessonTransformer->transformCollection($lessons->all()) // nests information within a 'data' array.
         ], 200);
     }
 
@@ -35,21 +43,7 @@ class LessonsController extends Controller
         }
         
         return response()->json([
-            'data' => $this->transform($lesson->toArray())
+            'data' => $this->lessonTransformer->transform($lesson)
         ], 200);
-    }
-
-    private function transformCollection($lessons)
-    {
-        return array_map([$this, 'transform'], $lessons->toArray());
-    }
-
-    private function transform($lesson)
-    {
-        return [
-            'title' => $lesson['title'],
-            'body' => $lesson['body'],
-            'active' => (boolean) $lesson['some_bool']
-        ];
     }
 }
