@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Acme\Transformers\LessonTransformer;
 use App\Lesson;
 
-class LessonsController extends Controller
+class LessonsController extends ApiController
 {
     protected $lessonTransformer;
 
@@ -24,9 +24,9 @@ class LessonsController extends Controller
         
         $lessons = Lesson::all();
         
-        return response()->json([
+        return $this->respond([
             'data' => $this->lessonTransformer->transformCollection($lessons->all()) // nests information within a 'data' array.
-        ], 200);
+        ]);
     }
 
     public function show($id)
@@ -35,15 +35,11 @@ class LessonsController extends Controller
 
         if (!$lesson)
         {
-            return response()->json([
-                'error' => [ // will nest errors here to orginize response information.
-                    'message' => 'Lesson does not exist'
-                ]
-            ], 404);
+            return $this->respondNotFound('Lesson does not exist.');
         }
         
-        return response()->json([
+        return $this->respond([
             'data' => $this->lessonTransformer->transform($lesson)
-        ], 200);
+        ]);
     }
 }
