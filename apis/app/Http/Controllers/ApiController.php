@@ -42,4 +42,18 @@ class ApiController extends Controller
             ]
         ]);
     }
+
+    protected function giveError($message)
+    {
+        return $this->setStatusCode(422)->respond([
+            'message' => $message
+        ]);
+    }
+
+    protected function respondCreated($message)
+    {
+        return $this->setStatusCode(201)->respond([
+            'message' => $message
+        ]);
+    }
 }
