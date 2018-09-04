@@ -4,7 +4,7 @@ namespace App;
 
 class Lesson extends \Eloquent {
 
-    protected $fillable = ['title', 'body'];
+    protected $fillable = ['title', 'body', 'some_bool'];
 
     public function tags()
     {
