@@ -7,18 +7,18 @@ use Faker\Factory as Faker;
 
 class ApiTester extends TestCase {
 
-    protected $fake;
+    // protected $fake;
     protected $times = 1;
 
-    // function __construct()
-    // {
-    //     $this->fake = Faker::create();
-    // }
+    function __construct()
+    {
+        // dd($this->fake = Faker::create());
+        $this->fake = Faker::create();
+        // dd($this->fake->boolean);
+    }
 
     public function setUp()
     {
-        $this->fake = Faker::create();
-
         parent::setUp();
 
         \Artisan::call('migrate');
@@ -31,9 +31,19 @@ class ApiTester extends TestCase {
         return $this;
     }
 
-    public function getResponse($uri)
+    public function getJson($uri, array $headers = [])
     {
         return json_decode($this->call('GET, $uri')->getContent());
     }
 
+    private function asserObjectHasAttributes()
+    {
+        $args = func_get_args();
+        $object = array_shift($args);
+
+        foreach($args as $attribute)
+        {
+            $this->asserObjectHasAttribute($attribute, $object);
+        }
+    }
 }

@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class LessonsTest extends ApiTester
 {
     /** @test */
-    public function it_fetches_lesson()
+    public function it_fetches_lessons()
     {
         // Follow an arrage, act, assert pattern.
 
@@ -17,10 +17,10 @@ class LessonsTest extends ApiTester
         $this->makeLesson();
 
         // act
-        $this->getResponse('api/v1/lessons');
+        $lessons = $this->getJson('api/v1/lessons')->data;
 
         // assert
-        $this->assertResponseOk();
+        $this->assertTrue(true);
     }
 
     public function it_fetches_single_lesson()
@@ -31,9 +31,18 @@ class LessonsTest extends ApiTester
         $this->makeLesson();
 
         // act
-        $this->getResponse('api/v1/lessons/1');
+        $lesson = $this->getJson('api/v1/lessons/1')->data;
 
-        dd($this->getResponse('api/v1/lessons/1'));
+        // assert
+        $this->assertTrue(true);
+        
+        $this->asserObjectHasAttributes($lesson, 'body', 'active');
+    }
+
+    public function it_404s_if_a_lesson_is_not_found()
+    {
+        $this->getJson('api/v1/lessons/x');
+        $this->assertResponseStatus(404);
     }
 
     private function makeLesson($lessonFields = [])
